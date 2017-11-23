@@ -88,8 +88,8 @@ public class ThumbnailResource {
 
 	private BodyPart getBodyPart(File image, ThumbnailKind kind) {
 		BodyPart bodyPart = new BodyPart();
-		ContentDisposition contentDisposition = ContentDisposition.type("attachement").fileName(kind + ".png")
-				.build();
+		ContentDisposition contentDisposition = ContentDisposition.type("attachement")
+				.fileName(kind + ThumbnailKind.getFileType(kind)).build();
 		bodyPart.setContentDisposition(contentDisposition);
 		bodyPart.setEntity(image);
 		if (image != null) {
