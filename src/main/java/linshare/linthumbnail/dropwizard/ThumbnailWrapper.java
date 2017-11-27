@@ -34,21 +34,16 @@
 
 package linshare.linthumbnail.dropwizard;
 
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
 import java.util.Map;
-
-import javax.imageio.ImageIO;
 
 import org.linagora.LinThumbnail.FileResource;
 import org.linagora.LinThumbnail.FileResourceFactory;
 import org.linagora.LinThumbnail.ThumbnailService;
 import org.linagora.LinThumbnail.impl.ThumbnailServiceImpl;
-import org.linagora.LinThumbnail.utils.Constants;
 import org.linagora.LinThumbnail.utils.ThumbnailKind;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -94,32 +89,13 @@ public class ThumbnailWrapper {
 	}
 
 	public Map<ThumbnailKind, File> getThumbnailList() throws IOException {
-		Map<ThumbnailKind, File> imagesMap = new HashMap<ThumbnailKind, File>();
-		Map<ThumbnailKind, BufferedImage> thmbImages = fileResource.generateThumbnailImageMap();
-		for (Map.Entry<ThumbnailKind, BufferedImage> entry : thmbImages.entrySet()) {
-			File imageFile = null;
-			try {
-				imageFile = File.createTempFile(resource.getAbsolutePath() + "_" + entry.getKey(), ".png");
-				BufferedImage thumbnailImage = entry.getValue();
-				imageFile.createNewFile();
-				ImageIO.write(thumbnailImage, Constants.THMB_DEFAULT_FORMAT, imageFile);
-				imagesMap.put(entry.getKey(), imageFile);
-				if (imageFile != null) {
-					imageFile.deleteOnExit();
-				}
-			} catch (IOException io) {
-				logger.error("Failled to get the thumbnail. " + entry.getKey(), io);
-				logger.debug(io.getMessage(), io);
-				if (!imagesMap.isEmpty()) {
-					for (Map.Entry<ThumbnailKind, File> images : imagesMap.entrySet()) {
-						images.getValue().delete();
-						imagesMap.remove(images);
-					}
-				}
-				return null;
+		Map<ThumbnailKind, File> thmbFiles = fileResource.generateThumbnailMap();
+		for (Map.Entry<ThumbnailKind, File> entry : thmbFiles.entrySet()) {
+			if (entry.getValue() == null || entry.getKey() == null) {
+				return fileResource.cleanThumbnailMap(thmbFiles);
 			}
 		}
-		return imagesMap;
+		return thmbFiles;
 	}
 
 }

@@ -97,7 +97,7 @@ public class DropwizardRestTest {
 			List<Attachment> allAttachments = mb.getAllAttachments();
 			for (Attachment attachment : allAttachments) {
 				String fileName = attachment.getContentDisposition().getFilename();
-				assertThat(fileName, anyOf(equalTo("LARGE.png"), equalTo("MEDIUM.png"), equalTo("SMALL.png")));
+				assertThat(fileName, anyOf(equalTo("LARGE.png"), equalTo("MEDIUM.png"), equalTo("SMALL.png"), equalTo("PDF.pdf")));
 				logger.info("Attachment : fileName : " + fileName);
 				File file = new File("src/test/resources/" + fileName);
 				DataHandler dataHandler = attachment.getDataHandler();
