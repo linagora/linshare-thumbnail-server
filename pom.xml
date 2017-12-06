@@ -1,12 +1,19 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>linshare-linthumbnail-dropwizard</groupId>
-	<artifactId>linshare-linthumbnail-dropwizard</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<groupId>org.linagora.linshare</groupId>
+	<artifactId>thumbnail-server</artifactId>
+	<version>2.0.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
-	<name>dropwizard</name>
+    <name>LinShare Thumbnail Standalone server</name>
 	<description>Web service for generating thumbnails (image preview) for various document formats</description>
+	<scm>
+		<connection>scm:git:git://github.com/linagora/linshare-thumbnail-server.git</connection>
+		<developerConnection>scm:git:ssh://git@ci.linagora.com:7999/linagora/lgs/linshare/products/linshare-thumbnail-server.git</developerConnection>
+		<tag>HEAD</tag>
+		<url>http://github.com/linagora/linshare-thumbnail-server/tree/master/</url>
+	</scm>
+
 	<organization>
 		<name>LINAGORA</name>
 		<url>http://www.linagora.com/</url>
@@ -35,9 +42,9 @@
 	</developers>
 	<dependencies>
 		<dependency>
-			<groupId>org.linagora</groupId>
-			<artifactId>LinThumbnail</artifactId>
-			<version>2.0.1</version>
+			<groupId>org.linagora.linshare</groupId>
+            <artifactId>thumbnail-engine</artifactId>
+			<version>2.0.0</version>
 		</dependency>
 		<dependency>
 			<groupId>io.dropwizard</groupId>
@@ -86,7 +93,7 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-		<repositories>
+	<repositories>
 		<repository>
 			<id>Linagora-LinShare-Repositories</id>
 			<url>https://nexus.linagora.com/content/groups/linshare</url>
@@ -143,6 +150,15 @@
 					</execution>
 				</executions>
 			</plugin>
+			<!-- maven-release-plugin -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-release-plugin</artifactId>
+				<version>2.5.3</version>
+				<configuration>
+					<tagNameFormat>v@{project.version}</tagNameFormat>
+				</configuration>
+			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
@@ -157,6 +173,18 @@
 			</plugin>
 		</plugins>
 	</build>
+	<distributionManagement>
+		<repository>
+			<id>Linagora-LinShare-Releases</id>
+			<name>Linagora LinShare Releases</name>
+			<url>https://nexus.linagora.com/content/repositories/linshare-releases</url>
+		</repository>
+		<snapshotRepository>
+			<id>Linagora-LinShare-Snapshots</id>
+			<name>Linagora LinShare Snapshots</name>
+			<url>https://nexus.linagora.com/content/repositories/linshare-snapshots</url>
+		</snapshotRepository>
+	</distributionManagement>
 	<properties>
 		<slf4j-release-version>1.7.2</slf4j-release-version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
