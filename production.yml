@@ -1,0 +1,23 @@
+server:
+  applicationConnectors:
+  - type: http
+    port: 8090
+  adminConnectors:
+  - type: http
+    port: 8091
+logging:
+  level: INFO
+  loggers:
+    org.linagora.LinThumbnail: INFO
+  appenders:
+  - type: file
+    currentLogFilename: /var/log/thumbnail-server.log
+    archivedLogFilenamePattern: /var/log/thumbnail-server-%d.log.gz
+    archivedFileCount: 15
+    timeZone: UTC
+#   - type: syslog
+#     host: localhost
+#     facility: local0
+#   - type: console
+#     threshold: WARN
+#     target: stderr
