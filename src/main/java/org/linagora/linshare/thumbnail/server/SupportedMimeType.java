@@ -32,10 +32,17 @@
  * applicable to LinShare software.
  */
 
-package linshare.linthumbnail.dropwizard;
+package org.linagora.linshare.thumbnail.server;
 
-import io.dropwizard.Configuration;
+import org.linagora.LinThumbnail.FileResourceFactory;
 
-public class ThumbnailConfiguration extends Configuration{
+public class SupportedMimeType {
 
+	public SupportedMimeType () {
+	}
+
+	public static Boolean isSupported(String mimeType) {
+		FileResourceFactory factory = FileResourceFactory.getInstance();
+		return factory.isSupportedMimeType(mimeType);
+	}
 }

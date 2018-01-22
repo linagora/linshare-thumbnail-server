@@ -32,17 +32,25 @@
  * applicable to LinShare software.
  */
 
-package linshare.linthumbnail.dropwizard;
+package org.linagora.linshare.thumbnail.server;
 
-import org.linagora.LinThumbnail.FileResourceFactory;
+import org.linagora.LinThumbnail.ServiceOfficeManager;
 
-public class SupportedMimeType {
+import com.codahale.metrics.health.HealthCheck;
 
-	public SupportedMimeType () {
+public class ServiceOfficeManagerHealthCheck extends HealthCheck{
+
+	private ServiceOfficeManager som;
+
+	public ServiceOfficeManagerHealthCheck(ServiceOfficeManager som) {
+		this.som = som;
 	}
 
-	public static Boolean isSupported(String mimeType) {
-		FileResourceFactory factory = FileResourceFactory.getInstance();
-		return factory.isSupportedMimeType(mimeType);
+	@Override
+	protected Result check() throws Exception {
+		if (!som.isStarted()) {
+			return Result.unhealthy("Service office Manager is not started !");
+		}
+		return Result.healthy();
 	}
 }

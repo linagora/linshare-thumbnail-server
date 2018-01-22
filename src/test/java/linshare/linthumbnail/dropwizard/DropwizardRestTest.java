@@ -59,6 +59,8 @@ import org.apache.cxf.jaxrs.ext.multipart.MultipartBody;
 
 import org.junit.ClassRule;
 import org.junit.Test;
+import org.linagora.linshare.thumbnail.server.ThumbnailApplication;
+import org.linagora.linshare.thumbnail.server.ThumbnailConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

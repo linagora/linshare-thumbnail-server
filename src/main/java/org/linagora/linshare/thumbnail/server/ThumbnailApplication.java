@@ -32,25 +32,44 @@
  * applicable to LinShare software.
  */
 
-package linshare.linthumbnail.dropwizard;
+package org.linagora.linshare.thumbnail.server;
 
+import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.linagora.LinThumbnail.ServiceOfficeManager;
+import org.linagora.LinThumbnail.ThumbnailService;
+import org.linagora.LinThumbnail.impl.ThumbnailServiceImpl;
 
-import com.codahale.metrics.health.HealthCheck;
+import io.dropwizard.Application;
+import io.dropwizard.setup.Bootstrap;
+import io.dropwizard.setup.Environment;
 
-public class ServiceOfficeManagerHealthCheck extends HealthCheck{
+public class ThumbnailApplication extends Application<ThumbnailConfiguration> {
 
-	private ServiceOfficeManager som;
-
-	public ServiceOfficeManagerHealthCheck(ServiceOfficeManager som) {
-		this.som = som;
+	public static void main(final String[] args) throws Exception {
+		new ThumbnailApplication().run(args);
 	}
 
 	@Override
-	protected Result check() throws Exception {
-		if (!som.isStarted()) {
-			return Result.unhealthy("Service office Manager is not started !");
-		}
-		return Result.healthy();
+	public String getName() {
+		return "LinShare-Thumbnail-Server";
+	}
+
+	@Override
+	public void initialize(final Bootstrap<ThumbnailConfiguration> bootstrap) {
+	}
+
+	@Override
+	public void run(final ThumbnailConfiguration configuration, final Environment environment) {
+		environment.jersey().register(MultiPartFeature.class);
+		final ThumbnailResource tr = new ThumbnailResource();
+		environment.jersey().register(tr);
+		final TypeMimeHealthCheck mimeTypeHealthCheck = new TypeMimeHealthCheck("image/png");
+		environment.healthChecks().register("MimeType", mimeTypeHealthCheck);
+		ServiceOfficeManager som = ServiceOfficeManager.getInstance();
+		final ServiceOfficeManagerHealthCheck officeManagerHealthCheck = new ServiceOfficeManagerHealthCheck(som);
+		environment.healthChecks().register("Service Office Manager", officeManagerHealthCheck);
+		ThumbnailService thumbnailService = new ThumbnailServiceImpl();
+		ServiceManager managed = new ServiceManager(thumbnailService);
+		environment.lifecycle().manage(managed);
 	}
 }

@@ -32,44 +32,70 @@
  * applicable to LinShare software.
  */
 
-package linshare.linthumbnail.dropwizard;
+package org.linagora.linshare.thumbnail.server;
 
-import org.glassfish.jersey.media.multipart.MultiPartFeature;
-import org.linagora.LinThumbnail.ServiceOfficeManager;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Map;
+
+import org.linagora.LinThumbnail.FileResource;
+import org.linagora.LinThumbnail.FileResourceFactory;
 import org.linagora.LinThumbnail.ThumbnailService;
 import org.linagora.LinThumbnail.impl.ThumbnailServiceImpl;
+import org.linagora.LinThumbnail.utils.ThumbnailKind;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import io.dropwizard.Application;
-import io.dropwizard.setup.Bootstrap;
-import io.dropwizard.setup.Environment;
+public class ThumbnailWrapper {
 
-public class ThumbnailApplication extends Application<ThumbnailConfiguration> {
+	public Logger logger = LoggerFactory.getLogger(ThumbnailWrapper.class);
 
-	public static void main(final String[] args) throws Exception {
-		new ThumbnailApplication().run(args);
+	private File resource;
+
+	private FileResourceFactory fileResourceFactory;
+
+	private ThumbnailService thumbnailService = new ThumbnailServiceImpl();
+
+	private FileResource fileResource;
+
+	public ThumbnailWrapper(InputStream resource, String fileName, String mimeType) throws IOException {
+		this.resource = getFileResource(fileName, resource);
+		this.fileResourceFactory = thumbnailService.getFactory();
+		this.fileResource = fileResourceFactory.getFileResource(this.resource, mimeType);
 	}
 
-	@Override
-	public String getName() {
-		return "LinThumbnail-WebService";
+	private File getFileResource(String name, InputStream is) throws IOException {
+		File file = null;
+		try {
+			file = File.createTempFile("file", name);
+			try (FileOutputStream out = new FileOutputStream(file)) {
+				int read = 0;
+				byte bytes[] = new byte[1024];
+				while ((read = is.read(bytes)) != -1) {
+					out.write(bytes, 0, read);
+				}
+				out.flush();
+			}
+		} catch (IOException ex) {
+			logger.error("Error to get the file !!", ex);
+			if (file != null) {
+				file.delete();
+			}
+			return null;
+		}
+		return file;
 	}
 
-	@Override
-	public void initialize(final Bootstrap<ThumbnailConfiguration> bootstrap) {
+	public Map<ThumbnailKind, File> getThumbnailList() throws IOException {
+		Map<ThumbnailKind, File> thmbFiles = fileResource.generateThumbnailMap();
+		for (Map.Entry<ThumbnailKind, File> entry : thmbFiles.entrySet()) {
+			if (entry.getValue() == null || entry.getKey() == null) {
+				return fileResource.cleanThumbnailMap(thmbFiles);
+			}
+		}
+		return thmbFiles;
 	}
 
-	@Override
-	public void run(final ThumbnailConfiguration configuration, final Environment environment) {
-		environment.jersey().register(MultiPartFeature.class);
-		final ThumbnailResource tr = new ThumbnailResource();
-		environment.jersey().register(tr);
-		final TypeMimeHealthCheck mimeTypeHealthCheck = new TypeMimeHealthCheck("image/png");
-		environment.healthChecks().register("MimeType", mimeTypeHealthCheck);
-		ServiceOfficeManager som = ServiceOfficeManager.getInstance();
-		final ServiceOfficeManagerHealthCheck officeManagerHealthCheck = new ServiceOfficeManagerHealthCheck(som);
-		environment.healthChecks().register("Service Office Manager", officeManagerHealthCheck);
-		ThumbnailService thumbnailService = new ThumbnailServiceImpl();
-		ServiceManager managed = new ServiceManager(thumbnailService);
-		environment.lifecycle().manage(managed);
-	}
 }

@@ -8,7 +8,7 @@ server:
 logging:
   level: INFO
   loggers:
-    org.linagora.LinThumbnail: INFO
+    org.linagora.linshare.thumbnail.server: INFO
   appenders:
   - type: file
     currentLogFilename: /var/log/thumbnail-server.log

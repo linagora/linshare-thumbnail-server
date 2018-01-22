@@ -32,7 +32,7 @@
  * applicable to LinShare software.
  */
 
-package linshare.linthumbnail.dropwizard;
+package org.linagora.linshare.thumbnail.server;
 
 import java.io.File;
 import java.io.IOException;

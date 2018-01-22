@@ -1,9 +1,9 @@
 /*
  * LinShare is an open source filesharing software, part of the LinPKI software
  * suite, developed by Linagora.
- *
+ * 
  * Copyright (C) 2017 LINAGORA
- *
+ * 
  * This program is free software: you can redistribute it and/or modify it under
  * the terms of the GNU Affero General Public License as published by the Free
  * Software Foundation, either version 3 of the License, or (at your option) any
@@ -19,12 +19,12 @@
  * refrain from infringing Linagora intellectual property rights over its
  * trademarks and commercial brands. Other Additional Terms apply, see
  * <http://www.linagora.com/licenses/> for more details.
- *
+ * 
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more
  * details.
- *
+ * 
  * You should have received a copy of the GNU Affero General Public License and
  * its applicable Additional Terms for LinShare along with this program. If not,
  * see <http://www.gnu.org/licenses/> for the GNU Affero General Public License
@@ -32,27 +32,10 @@
  * applicable to LinShare software.
  */
 
-package linshare.linthumbnail.dropwizard;
+package org.linagora.linshare.thumbnail.server;
 
-import org.linagora.LinThumbnail.ThumbnailService;
+import io.dropwizard.Configuration;
 
-import io.dropwizard.lifecycle.Managed;
+public class ThumbnailConfiguration extends Configuration{
 
-public class ServiceManager implements Managed {
-
-	private ThumbnailService thumbnailService;
-
-	public ServiceManager(ThumbnailService thumbnailService) {
-		this.thumbnailService = thumbnailService;
-	}
-
-	@Override
-	public void start() throws Exception {
-		thumbnailService.start();
-	}
-
-	@Override
-	public void stop() throws Exception {
-		thumbnailService.stop();
-	}
 }

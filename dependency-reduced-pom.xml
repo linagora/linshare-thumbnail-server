@@ -61,7 +61,7 @@
               <transformers>
                 <transformer />
                 <transformer>
-                  <mainClass>linshare.linthumbnail.dropwizard.ThumbnailApplication</mainClass>
+                  <mainClass>org.linagora.linshare.thumbnail.server.ThumbnailApplication</mainClass>
                 </transformer>
               </transformers>
             </configuration>
