@@ -60,7 +60,10 @@ public class ThumbnailWrapper {
 
 	private FileResource fileResource;
 
-	public ThumbnailWrapper(InputStream resource, String fileName, String mimeType) throws IOException {
+	private int delay;
+
+	public ThumbnailWrapper(InputStream resource, String fileName, String mimeType, String delay) throws IOException {
+		this.delay = Integer.parseInt(delay);
 		this.resource = getFileResource(fileName, resource);
 		this.fileResourceFactory = thumbnailService.getFactory();
 		this.fileResource = fileResourceFactory.getFileResource(this.resource, mimeType);
@@ -85,6 +88,7 @@ public class ThumbnailWrapper {
 			}
 			return null;
 		}
+		ScheduleForDeletion.scheduleForDeletion(file, delay);
 		return file;
 	}
 
@@ -96,6 +100,14 @@ public class ThumbnailWrapper {
 			}
 		}
 		return thmbFiles;
+	}
+
+	public void cleanFiles(Map<ThumbnailKind, File> thumbnailMap) {
+		for (Map.Entry<ThumbnailKind, File> entry : thumbnailMap.entrySet()) {
+			if (entry.getValue() != null) {
+				ScheduleForDeletion.scheduleForDeletion(entry.getValue(), delay);
+			}
+		}
 	}
 
 }

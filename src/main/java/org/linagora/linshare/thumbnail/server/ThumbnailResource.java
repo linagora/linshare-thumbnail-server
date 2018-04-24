@@ -63,6 +63,13 @@ public class ThumbnailResource {
 
 	public Logger logger = LoggerFactory.getLogger(ThumbnailResource.class);
 
+	protected String delay;
+
+	public ThumbnailResource(String delay) {
+		super();
+		this.delay = delay;
+	}
+
 	@POST
 	@Consumes("multipart/form-data")
 	@Produces("multipart/mixed")
@@ -73,12 +80,13 @@ public class ThumbnailResource {
 			throws IOException {
 		try {
 			Map<ThumbnailKind, File> thumbnailMap = new HashMap<ThumbnailKind, File>();
-			ThumbnailWrapper tw = new ThumbnailWrapper(is, fileDetail.getFileName(), mimeType);
+			ThumbnailWrapper tw = new ThumbnailWrapper(is, fileDetail.getFileName(), mimeType, delay);
 			thumbnailMap = tw.getThumbnailList();
 			MultiPart multiPart = new MultiPart();
 			thumbnailMap.forEach((key, value)->{
 				multiPart.bodyPart(getBodyPart(value, key));
 			});
+			tw.cleanFiles(thumbnailMap);
 			return Response.ok(multiPart, "multipart/mixed").build();
 		} catch (IOException io) {
 			logger.debug("Error to generate the thumbnail !!", io);

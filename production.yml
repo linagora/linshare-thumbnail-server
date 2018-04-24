@@ -1,3 +1,5 @@
+# delay before deleting the temp files (the Unit is : SECOND)
+duration: 100
 server:
   applicationConnectors:
   - type: http

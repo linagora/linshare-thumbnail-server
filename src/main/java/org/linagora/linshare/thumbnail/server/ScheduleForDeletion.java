@@ -2,7 +2,7 @@
  * LinShare is an open source filesharing software, part of the LinPKI software
  * suite, developed by Linagora.
  * 
- * Copyright (C) 2017 LINAGORA
+ * Copyright (C) 2018 LINAGORA
  * 
  * This program is free software: you can redistribute it and/or modify it under
  * the terms of the GNU Affero General Public License as published by the Free
@@ -12,7 +12,7 @@
  * Public License, subsections (b), (c), and (e), pursuant to which you must
  * notably (i) retain the display of the “LinShare™” trademark/logo at the top
  * of the interface window, the display of the “You are using the Open Source
- * and free version of LinShare™, powered by Linagora © 2009–2017. Contribute to
+ * and free version of LinShare™, powered by Linagora © 2009–2018. Contribute to
  * Linshare R&D by subscribing to an Enterprise offer!” infobox and in the
  * e-mails sent with the Program, (ii) retain all hypertext links between
  * LinShare and linshare.org, between linagora.com and Linagora, and (iii)
@@ -34,42 +34,39 @@
 
 package org.linagora.linshare.thumbnail.server;
 
-import org.glassfish.jersey.media.multipart.MultiPartFeature;
-import org.linagora.LinThumbnail.ServiceOfficeManager;
-import org.linagora.LinThumbnail.ThumbnailService;
-import org.linagora.LinThumbnail.impl.ThumbnailServiceImpl;
+import java.io.File;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
-import io.dropwizard.Application;
-import io.dropwizard.setup.Bootstrap;
-import io.dropwizard.setup.Environment;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class ThumbnailApplication extends Application<ThumbnailConfiguration> {
+public class ScheduleForDeletion {
 
-	public static void main(final String[] args) throws Exception {
-		new ThumbnailApplication().run(args);
+	private static Logger logger = LoggerFactory.getLogger(ScheduleForDeletion.class);
+
+	private static ScheduledExecutorService executor = Executors
+			.newScheduledThreadPool(Runtime.getRuntime().availableProcessors());
+
+	private static final TimeUnit UNITS = TimeUnit.SECONDS;
+
+	public static void scheduleForDeletion(File tmpFile, long delay) {
+		executor.schedule(() -> {
+				deleteTempFile(tmpFile);
+		}, delay, UNITS);
 	}
 
-	@Override
-	public String getName() {
-		return "LinShare-Thumbnail-Server";
+	private static void deleteTempFile(File tmpFile) {
+		if (tmpFile != null) {
+			String fileName = tmpFile.getName();
+			logger.info("Start deleting the file ", fileName);
+			if(!tmpFile.delete()) {
+				logger.info("Cannot delete file, because file does not exist");
+			} else {
+				logger.info("file deleted ", fileName);
+			}
+		}
 	}
 
-	@Override
-	public void initialize(final Bootstrap<ThumbnailConfiguration> bootstrap) {
-	}
-
-	@Override
-	public void run(final ThumbnailConfiguration configuration, final Environment environment) {
-		environment.jersey().register(MultiPartFeature.class);
-		final ThumbnailResource tr = new ThumbnailResource(configuration.getDuration());
-		environment.jersey().register(tr);
-		final TypeMimeHealthCheck mimeTypeHealthCheck = new TypeMimeHealthCheck("image/png");
-		environment.healthChecks().register("MimeType", mimeTypeHealthCheck);
-		ServiceOfficeManager som = ServiceOfficeManager.getInstance();
-		final ServiceOfficeManagerHealthCheck officeManagerHealthCheck = new ServiceOfficeManagerHealthCheck(som);
-		environment.healthChecks().register("Service Office Manager", officeManagerHealthCheck);
-		ThumbnailService thumbnailService = new ThumbnailServiceImpl();
-		ServiceManager managed = new ServiceManager(thumbnailService);
-		environment.lifecycle().manage(managed);
-	}
 }

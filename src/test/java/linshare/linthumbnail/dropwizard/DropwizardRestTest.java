@@ -56,7 +56,6 @@ import org.apache.cxf.jaxrs.client.WebClient;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.apache.cxf.jaxrs.ext.multipart.ContentDisposition;
 import org.apache.cxf.jaxrs.ext.multipart.MultipartBody;
-
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.linagora.linshare.thumbnail.server.ThumbnailApplication;
@@ -69,7 +68,7 @@ import io.dropwizard.testing.junit.DropwizardAppRule;
 
 public class DropwizardRestTest {
 
-	public Logger logger = LoggerFactory.getLogger(DropwizardRestTest.class);
+	private Logger logger = LoggerFactory.getLogger(DropwizardRestTest.class);
 
 	@ClassRule
 	public static final DropwizardAppRule<ThumbnailConfiguration> RULE = new DropwizardAppRule<ThumbnailConfiguration>(
@@ -84,7 +83,7 @@ public class DropwizardRestTest {
 	}
 
 	@Test
-	public void generateThumbnailZipTest() throws IOException {
+	public void generateThumbnailTest() throws IOException {
 		WebClient client = WebClient.create("http://localhost:8090/linthumbnail");
 		client.type(MediaType.MULTIPART_FORM_DATA);
 		client.accept("multipart/mixed");
