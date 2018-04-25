@@ -34,8 +34,24 @@
 
 package org.linagora.linshare.thumbnail.server;
 
+import org.hibernate.validator.constraints.NotEmpty;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import io.dropwizard.Configuration;
 
-public class ThumbnailConfiguration extends Configuration{
+public class ThumbnailConfiguration extends Configuration {
 
+	@NotEmpty
+	private String duration;
+
+	@JsonProperty
+	public String getDuration() {
+		return duration;
+	}
+
+	@JsonProperty
+	public void setDuration(String duration) {
+		this.duration = duration;
+	}
 }
