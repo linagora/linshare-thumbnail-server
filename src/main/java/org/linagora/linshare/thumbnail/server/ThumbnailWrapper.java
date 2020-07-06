@@ -40,6 +40,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
 
+import org.jodconverter.office.OfficeException;
 import org.linagora.LinThumbnail.FileResource;
 import org.linagora.LinThumbnail.FileResourceFactory;
 import org.linagora.LinThumbnail.ThumbnailService;
@@ -92,7 +93,7 @@ public class ThumbnailWrapper {
 		return file;
 	}
 
-	public Map<ThumbnailKind, File> getThumbnailList() throws IOException {
+	public Map<ThumbnailKind, File> getThumbnailList() throws IOException, OfficeException {
 		Map<ThumbnailKind, File> thmbFiles = fileResource.generateThumbnailMap();
 		for (Map.Entry<ThumbnailKind, File> entry : thmbFiles.entrySet()) {
 			if (entry.getValue() == null || entry.getKey() == null) {

@@ -54,6 +54,7 @@ import org.glassfish.jersey.media.multipart.ContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.glassfish.jersey.media.multipart.MultiPart;
+import org.jodconverter.office.OfficeException;
 import org.linagora.LinThumbnail.utils.ThumbnailKind;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -77,7 +78,7 @@ public class ThumbnailResource {
 			@FormDataParam("file") InputStream is,
 			@FormDataParam("file") FormDataContentDisposition fileDetail,
 			@QueryParam("mimeType")String mimeType)
-			throws IOException {
+			throws IOException, OfficeException {
 		try {
 			Map<ThumbnailKind, File> thumbnailMap = new HashMap<ThumbnailKind, File>();
 			ThumbnailWrapper tw = new ThumbnailWrapper(is, fileDetail.getFileName(), mimeType, delay);
