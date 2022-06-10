@@ -134,7 +134,7 @@
 						</goals>
 						<configuration>
 							<transformers>
-								<transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
+								<transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
 								<transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
 									<mainClass>org.linagora.linshare.thumbnail.server.ThumbnailApplication</mainClass>
 								</transformer>
@@ -203,7 +203,7 @@
 	</distributionManagement>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<dropwizard.version>2.0.10</dropwizard.version>
+		<dropwizard.version>2.1.0</dropwizard.version>
 		<cxf.version>3.3.6</cxf.version>
 	</properties>
 </project>
